@@ -1,9 +1,11 @@
 # -- coding: utf-8 --
 import math
+import datetime
 import bisect
 
 
-def hellinger_distance(p: list, q: list):
+def hellinger_distance(p: list, q: list, ruler: list):
+
     pass
 
 
@@ -39,11 +41,21 @@ def read_week_data(file_name):
             line = f.readline()
             if not line:
                 break
-            usage = line.split(',')[1]
+            usage = float(line.strip('\n').split(',')[1])
             res.append(usage)
     return res
 
 
 if __name__ == '__main__':
-    data = [22986914.0, 25156526.0, 35592972.5, 35064030.0, 26074722.5, 34903419.0, 45000000.0]
-    print(discrete(data, 0.5, 10**7))
+    start_time = datetime.datetime(2014, 3, 17)
+    house = 'House12'
+
+    week_data = []
+    for week_num in range(6):
+        time_span = [start_time, start_time + datetime.timedelta(days=7)]
+        week_data.append(read_week_data('数据集/多个家庭/{}.csv_{}_{}_{}_{}.csv_week_usage.csv'.format(house, time_span[0].date(), time_span[1].date(), int(time_span[0].timestamp()), int(time_span[1].timestamp()))))
+        start_time += datetime.timedelta(days=7)
+
+    for d in week_data:
+        r = discrete(d, 0.5, 10**7)
+        print(r)
