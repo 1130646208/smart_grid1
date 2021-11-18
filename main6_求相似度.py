@@ -103,24 +103,30 @@ def read_week_data(file_name):
 
 
 if __name__ == '__main__':
+    # 配置
     start_time = datetime.datetime(2014, 3, 17)
-    house = 'House3'
+    house = 'House5'
+    week_num = 6
+    resolution = 0.5
+    magnitude = 10**8
 
+    # 运算
     week_data = []
-    for week_num in range(6):
+    for week_num in range(week_num):
         time_span = [start_time, start_time + datetime.timedelta(days=7)]
         week_data.append(read_week_data(
-            '数据集/多个家庭/{}.csv_{}_{}_{}_{}.csv_week_usage.csv'.format(house, time_span[0].date(), time_span[1].date(),
+            '数据集/多个家庭/{}.csv_{}_{}_{}_{}.csv_week_usage.csv'.format(house,
+                                                                    time_span[0].date(),
+                                                                    time_span[1].date(),
                                                                     int(time_span[0].timestamp()),
                                                                     int(time_span[1].timestamp()))))
         start_time += datetime.timedelta(days=7)
 
-    resolution = 0.5
     discrete_data = []
     for d in week_data:
-        r = discrete(d, resolution, 10 ** 7)
+        r = discrete(d, resolution, magnitude)
         discrete_data.append(r)
 
     for i in range(len(discrete_data) - 1):
-        u_d1, u_d2 = uniform_scale(discrete_data[i], discrete_data[i+1], resolution)
+        u_d1, u_d2 = uniform_scale(discrete_data[i], discrete_data[i + 1], resolution)
         print(hellinger_distance(u_d1, u_d2), end='\t')

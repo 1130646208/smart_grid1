@@ -32,9 +32,9 @@ def draw(title, figure, *data):
 
 if __name__ == '__main__':
     # 参数设定
-    house = 'House12'
+    house = 'House5'
     base_file_name = '数据集/多个家庭/{}.csv'.format(house)
-    start_time = datetime.datetime(2014, 4, 21)
+    start_time = datetime.datetime(2014, 3, 24)
     # 调用计算
     time_span = [start_time, start_time + datetime.timedelta(days=7)]
     start_time = int(time_span[0].timestamp())

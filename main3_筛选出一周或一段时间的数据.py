@@ -34,10 +34,13 @@ def gen_segment_for_time_span(time_span: list, file_name: str):
 
 
 if __name__ == '__main__':
+    # 配置
     start_time = datetime.datetime(2014, 3, 17)
-    house = 'House12'
+    house = 'House5'
+    week_num = 6
 
-    for week_num in range(6):
+    # 运算
+    for week_num in range(week_num):
         time_span = [start_time, start_time + datetime.timedelta(days=7)]
         file_name = '数据集/多个家庭/{}.csv'.format(house)
         gen_segment_for_time_span(time_span, file_name)

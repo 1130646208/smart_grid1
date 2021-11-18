@@ -73,14 +73,14 @@ def cal_week_usage(week_file_name: str):
 
 
 if __name__ == '__main__':
+    # 配置
     start_time = datetime.datetime(2014, 3, 17)
-    house = 'House12'
+    house = 'House5'
+    week_num = 6
 
-    for week_num in range(6):
+    # 运算
+    for week_num in range(week_num):
         time_span = [start_time, start_time + datetime.timedelta(days=7)]
         cal_week_usage('数据集/多个家庭/{}.csv_{}_{}_{}_{}.csv'.format(house, time_span[0].date(), time_span[1].date(), int(time_span[0].timestamp()), int(time_span[1].timestamp())))
         start_time += datetime.timedelta(days=7)
 
-    # x = [1, 2, 3, 4]
-    # y = [11, 11, 11, 22]
-    # print(my_cal_integral(x, y))
