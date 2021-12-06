@@ -113,26 +113,26 @@ def random_break(break_num):
         NODES[rand_index].is_abnormal = True
 
 
-def repartition_dfs(node_list):
+def repartition_dfs(node_list, beta):
     global ITER_COUNT
     ITER_COUNT += 1
     # 递归停止条件
-    if is_convergence(node_list):
+    if is_convergence(node_list, beta):
         __NEW_GROUP_RECORD.append(node_list[:])
         return
     # 递归逻辑
     random.shuffle(node_list)
     p = len(node_list) // 2
-    repartition_dfs(node_list[:p])
-    repartition_dfs(node_list[p:])
+    repartition_dfs(node_list[:p], beta)
+    repartition_dfs(node_list[p:], beta)
 
 
-def repartition():
+def repartition(beta):
     for group_id, node_list in __GROUP_RECORD.items():
-        repartition_dfs(node_list)
+        repartition_dfs(node_list, beta)
 
 
-def is_convergence(node_list):
+def is_convergence(node_list, beta):
     if len(node_list) == 0:
         return True
     abnormal_count = 0
@@ -141,14 +141,20 @@ def is_convergence(node_list):
         if NODES[node_ind].is_abnormal:
             abnormal_node.append(node_ind)
             abnormal_count += 1
-    # 只有一个异常节点，收敛
-    if abnormal_count <= 1:
-        # print("收敛，异常节点", abnormal_node)
+    # 无异常节点，收敛
+    if abnormal_count == 0:
+        return True
+    # if abnormal_count == 1 or abnormal_count == 0:
+    #     # print("收敛，异常节点", abnormal_node)
+    #     return True
+
+    # 达到收敛阈值
+    if len(node_list) <= beta:
         return True
     return False
 
 
-def run(total_node_num, initial_group_num, break_num):
+def run(total_node_num, initial_group_num, break_num, beta):
     global TOTAL_NODE_NUM
     global INITIAL_GROUP_NUM
     global BREAK_NODE_NUM
@@ -159,7 +165,7 @@ def run(total_node_num, initial_group_num, break_num):
     initial_partition(TOTAL_NODE_NUM // INITIAL_GROUP_NUM, TOTAL_NODE_NUM)
     # gen_key()
     random_break(BREAK_NODE_NUM)
-    repartition()
+    repartition(beta)
     # print("节点总数:{}\t恶意节点数:{}\t初始分组数:{}\t迭代次数:{}\t最终分组数:{}\t".
     #       format(TOTAL_NODE_NUM, BREAK_NODE_NUM, INITIAL_GROUP_NUM, ITER_COUNT, len(__NEW_GROUP_RECORD)))
     return TOTAL_NODE_NUM, BREAK_NODE_NUM, INITIAL_GROUP_NUM, ITER_COUNT, len(__NEW_GROUP_RECORD)
@@ -194,16 +200,17 @@ if __name__ == '__main__':
     _iter = 40
     total_node_num = [i for i in range(25, 1000, 10)]
     initial_group_num = 5
-    break_num = 25
+    beta = 15
+    break_num = 10
 
-    print("节点总数\t初始分组数\t恶意节点数\t平均迭代次数")
+    print("节点总数\t初始分组数\t恶意节点数\tbeta\t平均迭代次数\t")
     for j in total_node_num:
         _sum = 0
         for _ in range(_iter):
             reset()
-            res = run(total_node_num=j, initial_group_num=initial_group_num, break_num=break_num)
+            res = run(total_node_num=j, initial_group_num=j // 20 + 1, break_num=int(0.05 * j), beta=beta)
             _sum += res[3]
-        print("{}\t{}\t{}\t{}".format(j, initial_group_num, break_num, _sum / _iter))
+        print("    {}\t        {}\t    {}\t    {}\t    {}".format(j, j // 20 + 1, int(0.05 * j), beta, _sum / _iter - (j // 20 + 1)))
 
 # 初始分组数
 # if __name__ == '__main__':
