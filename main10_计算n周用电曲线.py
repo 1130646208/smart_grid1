@@ -76,10 +76,32 @@ def cal_n_week_usage(week_file_name: str, weeks: int):
 if __name__ == '__main__':
     # 配置
     start_time = datetime.datetime(2014, 3, 17)
-    house = 'House5'
     week_num = 10
-
+    houses = [
+        # 'House1',
+        # 'House2',
+        # 'House3',
+        # # 'House4',
+        # 'House5',
+        # 'House6',
+        # 'House7',
+        # 'House8',
+        # # 'House9',
+        # 'House10',
+        # 'House11',
+        # 'House12',
+        # 'House13',
+        # 'House14',
+        # 'House15',
+        # 'House16',
+        # 'House17',
+        # 'House18',
+        # 'House19',
+        # 'House20',
+        # 'House21'
+    ]
     # 运算
-    cal_n_week_usage('数据集/多个家庭/{}.csv_n_weeks_raw.csv'.format(house), week_num)
+    for house in houses:
+        cal_n_week_usage('数据集/多个家庭/{}.csv_n_weeks_raw.csv'.format(house), week_num)
 
 

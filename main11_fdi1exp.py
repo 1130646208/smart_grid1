@@ -35,15 +35,23 @@ def inject_error(data, inject_week: int):
     return injected_data
 
 
-def detect_error(data, threshold: float):
+def detect_error_type1(data, threshold: float):
     """
     检查是否有异常出现
+    具体是检查是否连续两个相似度超过某阈值
     :param data:
     :param threshold:
     :return: 有异常True
     """
-    maxi = max(data)
-    if maxi > threshold:
+    for week_num in range(len(data) - 1):
+        if data[week_num] > threshold and data[week_num + 1] > threshold and abs(
+                data[week_num] - data[week_num + 1]) < 0.5:
+            return True
+    return False
+
+
+def detect_error_type2(data, week_num, threshold: float):
+    if data[week_num-1] > threshold or data[week_num] > threshold:
         return True
     return False
 
@@ -60,44 +68,56 @@ if __name__ == '__main__':
     # 配置
     start_time = datetime.datetime(2014, 3, 17)
     houses = [
-        # 'House1',
-        # 'House2',
+        'House1',
+        'House2',
         # 'House3',
         # 'House4',
         'House5',
-        # 'House6',
-        # 'House7',
-        # 'House8',
+        'House6',
+        'House7',
+        'House8',
         # 'House9',
-        # 'House10',
+        'House10',
         # 'House11',
-        # 'House12',
-        # 'House13',
+        'House12',
+        'House13',
         # 'House14',
-        # 'House15',
-        # 'House16',
-        # 'House17',
-        # 'House18',
-        # 'House19',
-        # 'House20'
+        'House15',
+        'House16',
+        'House17',
+        'House18',
+        'House19',
+        # 'House20',
+        'House21'
     ]
     week_num = 10
-    resolution = 0.6
-    err_count = 0
+    resolution = 0.5
+    inject_week = 1
+    threshold = 0.8
     # 运算
+    ratios = []
     for house in houses:
-        normal = discrete_all(get_all(house, week_num), resolution)
-        error = inject_error(get_all(house, week_num), 3)
-        normal_h = cal_hellinger_distance(normal)
-        error_h = cal_hellinger_distance(error)
-        if detect_error(error_h, 0.9):
-            err_count += 1
-        print(normal)
-        print(error)
-        print(normal_h)
-        print(error_h)
-    print(err_count / len(houses))
+        err_count = 0
+        for w in range(1, week_num-1):
+            normal = discrete_all(get_all(house, week_num), resolution)
+            error = inject_error(get_all(house, week_num), w)
+            normal_h = cal_hellinger_distance(normal)
+            error_h = cal_hellinger_distance(error)
+            print('Normal:{}'.format(normal_h))
+            print('Error:{}'.format(error_h))
+            # if detect_error_type2(error_h, w, threshold) and not detect_error_type2(normal_h, w, threshold):
+            if detect_error_type2(error_h, w, threshold):
+                err_count += 1
+                print('**Detected error in {}---week_ind:{}'.format(house, w))
+            else:
+                print('##Not detected error in {}---week_ind:{}'.format(house, w))
+            # print(normal)
+            # print(error)
+            print('')
 
-    # for i in range(len(discrete_data) - 1):
-    #     u_d1, u_d2 = HDIS.uniform_scale(discrete_data[i], discrete_data[i + 1], resolution)
-    #     print(HDIS.hellinger_distance(u_d1, u_d2), end='\t')
+        ratio = err_count / (week_num - 2)
+        print('{} 检出率：{}'.format(house, ratio))
+        print('=====================================')
+        ratios.append(ratio)
+
+    print('总体 检出率：{}'.format(sum(ratios) / len(ratios)))

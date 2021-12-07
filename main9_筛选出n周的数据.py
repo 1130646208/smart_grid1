@@ -31,17 +31,17 @@ def gen_segment_for_time_span(time_span: list, file_name: str):
                     break
                 f1.write(','.join([data[0], data[1]]) + '\n')
                 write_count += 1
-    print('generated file: {}'.format(f1.name))
+    print('Append to file: {}'.format(f1.name))
     if write_count < 100:
-        print('but data poor')
+        print('!!!!!!!!!!!!!!!But data poor!!!!!!!!!!!!')
     else:
-        print('lines: {}'.format(write_count))
+        print('Lines: {}'.format(write_count))
 
 
 if __name__ == '__main__':
     # 配置
     start_time = datetime.datetime(2014, 3, 17)
-    house = 'House5'
+    house = 'House21'
     week_num = 10
 
     # 运算
