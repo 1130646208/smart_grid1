@@ -12,7 +12,7 @@ class FDI:
         :param factor:
         :return:
         """
-        assert 0 < factor <= 1
+        # assert 0 < factor <= 1
         return [i * factor for i in origin_data]
 
     @staticmethod

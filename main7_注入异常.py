@@ -4,8 +4,6 @@ from fdi import FDI
 from hdis import HDIS
 from utils import *
 
-
-
 if __name__ == '__main__':
     # 配置
     start_time = datetime.datetime(2014, 3, 17)
@@ -27,9 +25,9 @@ if __name__ == '__main__':
 
     for i, d in zip(range(len(week_data)), week_data):
         if i == 1:
-            r = HDIS.discrete(FDI.inject(d, FDI.fdi2, 3*10**7), resolution, magnitude)
+            r = HDIS.discrete(FDI.inject(d, FDI.fdi2, 3 * 10 ** 7), resolution)
         else:
-            r = HDIS.discrete(d, resolution, magnitude)
+            r = HDIS.discrete(d, resolution)
         discrete_data.append(r)
 
     for i in range(len(discrete_data) - 1):

@@ -60,14 +60,14 @@ class HDIS:
         return res1, res2
 
     @staticmethod
-    def discrete(data: list, resolution: float, magnitude: int):
+    def discrete(data: list, resolution: float):
         """
         将数据离散化
         :param data: 原始数据
         :param resolution: 离散化之后的精度
-        :param magnitude: 数据的量级
         :return: 离散化的数据
         """
+        magnitude = HDIS.get_magnitude(data)
         maxi = data[0] / magnitude
         mini = data[0] / magnitude
         small_data = []
@@ -90,3 +90,17 @@ class HDIS:
             right_dist = discrete_list[ind] - _d
             res.append(discrete_list[ind - 1] if left_dist < right_dist else discrete_list[ind])
         return res
+
+    @staticmethod
+    def get_magnitude(data):
+        maxi = max(data)
+        i = 0
+        while maxi // (10 ** i) > 10:
+            i += 1
+
+        return 10 ** i
+
+
+if __name__ == '__main__':
+    result = HDIS.discrete([204039419.5, 250920837.0, 156555854.0, 197031506.0, 142314924.5, 240066307.5, 21576087.5], 0.3)
+    print(result)

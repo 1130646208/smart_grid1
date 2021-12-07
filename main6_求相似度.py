@@ -9,14 +9,13 @@ if __name__ == '__main__':
     house = 'House2'
     week_num = 6
     resolution = 0.5
-    magnitude = 10 ** 7
 
     # 运算
     week_data = get_week_data(house, start_time, week_num)
 
     discrete_data = []
     for d in week_data:
-        r = HDIS.discrete(d, resolution, magnitude)
+        r = HDIS.discrete(d, resolution)
         discrete_data.append(r)
 
     for i in range(len(discrete_data) - 1):

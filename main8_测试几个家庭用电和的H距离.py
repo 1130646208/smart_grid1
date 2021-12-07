@@ -10,7 +10,6 @@ if __name__ == '__main__':
     houses = ['House2', 'House3', 'House5', 'House12']
     week_num = 6
     resolution = 0.4
-    magnitude = 10 ** 8
 
     house_data = []
     # 运算
@@ -30,7 +29,7 @@ if __name__ == '__main__':
 
     discrete_data = []
     for s in sum_data:
-        r = HDIS.discrete(s, resolution, magnitude)
+        r = HDIS.discrete(s, resolution)
         discrete_data.append(r)
 
     for i in range(len(discrete_data) - 1):
