@@ -16,7 +16,7 @@ def discrete_all(data, resolution):
 
 
 def get_all(house, week_num):
-    all_data = read_week_data('数据集/多个家庭/{}.csv_n_weeks_raw.csv_week_usage.csv'.format(house))
+    all_data = read_week_data('数据集/多个家庭/{}.csv_{}_weeks_raw.csv_week_usage.csv'.format(house, week_num))
     week_data = []
     for i in range(week_num):
         week_data.append(all_data[i * 7:i * 7 + 7])
@@ -28,7 +28,8 @@ def inject_error(data, inject_week: int):
     week_data = data
     for i, d in zip(range(len(week_data)), week_data):
         if i == inject_week:
-            r = HDIS.discrete(FDI.inject(d, FDI.fdi1, 0.5), resolution)
+
+            r = HDIS.discrete(FDI.inject(d, FDI.fdi4, 0, 4), resolution)
         else:
             r = HDIS.discrete(d, resolution)
         injected_data.append(r)
@@ -70,7 +71,7 @@ if __name__ == '__main__':
     houses = [
         'House1',
         'House2',
-        # 'House3',
+        'House3',
         # 'House4',
         'House5',
         'House6',
@@ -81,43 +82,46 @@ if __name__ == '__main__':
         # 'House11',
         'House12',
         'House13',
-        # 'House14',
         'House15',
-        'House16',
+        # 'House16',
         'House17',
         'House18',
         'House19',
         # 'House20',
         'House21'
     ]
-    week_num = 10
+    week_num = 20
     resolution = 0.5
-    inject_week = 1
+    # inject_week = 1
     threshold = 0.8
     # 运算
     ratios = []
+    print('')
+    for house in houses:
+        print('{}\t'.format(house), end='')
+    print('')
     for house in houses:
         err_count = 0
-        for w in range(1, week_num-1):
+        for w in range(1, week_num):
             normal = discrete_all(get_all(house, week_num), resolution)
             error = inject_error(get_all(house, week_num), w)
             normal_h = cal_hellinger_distance(normal)
             error_h = cal_hellinger_distance(error)
-            print('Normal:{}'.format(normal_h))
-            print('Error:{}'.format(error_h))
+            # print('Normal:{}'.format(normal_h))
+            # print('Error:{}'.format(error_h))
             # if detect_error_type2(error_h, w, threshold) and not detect_error_type2(normal_h, w, threshold):
             if detect_error_type2(error_h, w, threshold):
                 err_count += 1
-                print('**Detected error in {}---week_ind:{}'.format(house, w))
+                # print('**Detected error in {}---week_ind:{}'.format(house, w))
             else:
-                print('##Not detected error in {}---week_ind:{}'.format(house, w))
+                # print('##Not detected error in {}---week_ind:{}'.format(house, w))
+                pass
             # print(normal)
             # print(error)
-            print('')
-
-        ratio = err_count / (week_num - 2)
-        print('{} 检出率：{}'.format(house, ratio))
-        print('=====================================')
+            # print('')
+        ratio = err_count / (week_num - 1)
+        print('%2.2f\t' % (ratio * 100), end='')
+        # print('=====================================')
         ratios.append(ratio)
-
-    print('总体 检出率：{}'.format(sum(ratios) / len(ratios)))
+    print('')
+    print('【总体 检出率：{}】'.format(sum(ratios) / len(ratios)))

@@ -2,8 +2,7 @@
 # 已知恶意节点，分析分组监督迭代次数
 import random
 
-ENC_MOD = 2**32-1
-
+ENC_MOD = 2 ** 32 - 1
 
 TOTAL_NODE_NUM = 100
 BREAK_NODE_NUM = 10
@@ -11,7 +10,6 @@ INITIAL_GROUP_NUM = 10
 NODES = []
 __GROUP_RECORD = {}
 __NEW_GROUP_RECORD = []
-
 
 ITER_COUNT = 0
 
@@ -67,8 +65,8 @@ def gen_key():
         为NODES中的节点生成密钥（前提是已经分组完成了）
         :param node_ind_list:节点索引列表
         """
-        for a in range(len(node_ind_list)-1):
-            for b in range(a+1, len(node_ind_list)):
+        for a in range(len(node_ind_list) - 1):
+            for b in range(a + 1, len(node_ind_list)):
                 rand_key = random.randint(0, ENC_MOD)
                 NODES[node_ind_list[a]].keys[node_ind_list[b]] = rand_key
                 NODES[node_ind_list[b]].keys[node_ind_list[a]] = -rand_key
@@ -109,7 +107,7 @@ def random_break(break_num):
     assert break_num <= TOTAL_NODE_NUM
     temp_list = [i for i in range(TOTAL_NODE_NUM)]
     for _ in range(break_num):
-        rand_index = temp_list.pop(random.randint(0, len(temp_list)-1))
+        rand_index = temp_list.pop(random.randint(0, len(temp_list) - 1))
         NODES[rand_index].is_abnormal = True
 
 
@@ -179,51 +177,38 @@ def reset():
     ITER_COUNT = 0
 
 
-# 恶意节点数量
+# 最佳实践
 # if __name__ == '__main__':
-#     _iter = 20
-#     total_node_num = 200
+#     _iter = 40
+#     total_node_num = [i for i in range(25, 1000, 10)]
 #     initial_group_num = 5
-#     break_num = [i for i in range(0, 100, 5)]
+#     beta = 5
+#     break_num = 15
 #
-#     print("节点总数\t初始分组数\t恶意节点数\t平均迭代次数")
-#     for j in break_num:
+#     print("节点总数\t初始分组数\t恶意节点数\tbeta\t平均迭代次数\t")
+#     for j in total_node_num:
 #         _sum = 0
 #         for _ in range(_iter):
 #             reset()
-#             res = run(total_node_num=total_node_num, initial_group_num=initial_group_num, break_num=j)
+#             res = run(total_node_num=j, initial_group_num=j // 20 + 1, break_num=int(0.05 * j), beta=beta)
 #             _sum += res[3]
-#         print("{}\t{}\t{}\t{}".format(total_node_num, initial_group_num, j, _sum / _iter))
+#         print("    {}\t        {}\t    {}\t    {}\t    {}".format(j, j // 20 + 1, int(0.05 * j), beta,
+#                                                                   _sum / _iter - (j // 20 + 1)))
 
-# 节点总数
+# 恶意节点数
 if __name__ == '__main__':
     _iter = 40
     total_node_num = [i for i in range(25, 1000, 10)]
     initial_group_num = 5
-    beta = 15
-    break_num = 10
+    beta = 20
+    break_num = 15
 
     print("节点总数\t初始分组数\t恶意节点数\tbeta\t平均迭代次数\t")
     for j in total_node_num:
         _sum = 0
         for _ in range(_iter):
             reset()
-            res = run(total_node_num=j, initial_group_num=j // 20 + 1, break_num=int(0.05 * j), beta=beta)
+            res = run(total_node_num=j, initial_group_num=initial_group_num, break_num=break_num, beta=beta)
             _sum += res[3]
-        print("    {}\t        {}\t    {}\t    {}\t    {}".format(j, j // 20 + 1, int(0.05 * j), beta, _sum / _iter - (j // 20 + 1)))
-
-# 初始分组数
-# if __name__ == '__main__':
-#     _iter = 40
-#     total_node_num = 201
-#     initial_group_num = [i for i in range(2, 71, 5)]
-#     break_num = 32
-#
-#     print("节点总数\t初始分组数\t恶意节点数\t平均迭代次数")
-#     for j in initial_group_num:
-#         _sum = 0
-#         for _ in range(_iter):
-#             reset()
-#             res = run(total_node_num=total_node_num, initial_group_num=j, break_num=break_num)
-#             _sum += res[3]
-#         print("{}\t{}\t{}\t{}".format(total_node_num, j, break_num, _sum / _iter))
+        print("    {}\t        {}\t    {}\t    {}\t    {}".format(j, initial_group_num, break_num, beta,
+                                                                  _sum / _iter - initial_group_num))
